@@ -22,12 +22,27 @@ module.exports.postTable = (req, res, next) => {
     width,
     height,
   })
-    .then((newCheque) => {
-      res.status(201).send(newCheque);
+    .then((newTable) => {
+      res.status(201).send(newTable);
     })
     .catch((error) => {
       if (error.name === "ValidationError") {
         next(new ErrorBadRequest(errorMessage.validationErrorMessage));
+      } else {
+        next(error);
+      }
+    });
+};
+
+module.exports.deleteTable = (req, res, next) => {
+  const { tableId } = req.params;
+  Table.findByIdAndRemove(tableId)
+    .then((removedTable) => res.send(removedTable))
+    .catch((error) => {
+      if (error.name === "CastError") {
+        next(new ErrorBadRequest(errorMessage.cardBadRequestMessage));
+      } else if (error.name === "Forbidden") {
+        next(new ErrorForbidden(errorMessage.forbiddenMessage));
       } else {
         next(error);
       }
