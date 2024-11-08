@@ -13,7 +13,8 @@ const auth = (req, res, next) => {
     return;
   }
 
-  console.log(token);
+  const token = authorization.replace("Bearer ", "");
+
   let payload;
 
   try {
