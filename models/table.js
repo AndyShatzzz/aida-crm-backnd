@@ -21,6 +21,14 @@ const tableSchema = new mongoose.Schema({
     type: Number,
     require: true,
   },
+  id: {
+    type: Number,
+    require: true,
+  },
 });
 
-module.exports = mongoose.model("table", tableSchema);
+const tablesSchema = new mongoose.Schema({
+  tables: [tableSchema],
+});
+
+module.exports = mongoose.model("table", tablesSchema);

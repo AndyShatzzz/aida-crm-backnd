@@ -12,5 +12,6 @@ router.use("/products", auth, require("./products"));
 router.use("/cards", auth, require("./cards"));
 router.use("/cheques", auth, require("./cheques"));
 router.use("/tables", auth, require("./tables"));
+router.use("/print", auth, require("./printCheque"));
 
 module.exports = router;

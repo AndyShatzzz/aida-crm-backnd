@@ -13,15 +13,9 @@ module.exports.getTables = (req, res, next) => {
 };
 
 module.exports.postTable = (req, res, next) => {
-  const { tableNumber, x, y, width, height } = req.body;
+  const { tables } = req.body;
 
-  Table.create({
-    tableNumber,
-    x,
-    y,
-    width,
-    height,
-  })
+  Table.create({ tables })
     .then((newTable) => {
       res.status(201).send(newTable);
     })
@@ -43,6 +37,33 @@ module.exports.deleteTable = (req, res, next) => {
         next(new ErrorBadRequest(errorMessage.cardBadRequestMessage));
       } else if (error.name === "Forbidden") {
         next(new ErrorForbidden(errorMessage.forbiddenMessage));
+      } else {
+        next(error);
+      }
+    });
+};
+
+module.exports.patchTables = (req, res, next) => {
+  const { tableId } = req.params;
+  const { tables } = req.body;
+
+  Table.findByIdAndUpdate(
+    tableId,
+    {
+      tables,
+    },
+    { new: true, runValidators: true }
+  )
+    .then((updatedTables) => {
+      if (!updatedTables) {
+        next(new ErrorNotFound(errorMessage.productNotFoundMessage));
+      } else {
+        res.send(updatedTables);
+      }
+    })
+    .catch((error) => {
+      if (error.name === "ValidationError") {
+        next(new ErrorBadRequest(errorMessage.validationErrorMessage));
       } else {
         next(error);
       }
